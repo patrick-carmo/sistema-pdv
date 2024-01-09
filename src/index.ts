@@ -1,10 +1,10 @@
 import 'dotenv/config'
 import express, { Express } from 'express'
-import routes from './routes/routes'
+import route from './routes/routes'
 const app: Express = express()
 
 app.use(express.json())
-app.use(routes)
+app.use(route)
 
 const port: number = Number(process.env.PORT) || 3000
 app.listen(port, () => {
