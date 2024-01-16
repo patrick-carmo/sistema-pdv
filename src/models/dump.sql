@@ -1,16 +1,16 @@
-create table usuarios (
+create table users (
   id serial primary key,
-  nome text not null,
+  name text not null,
   email text not null unique,
-  senha text not null
+  password text not null
 );
 
-create table categorias(
+create table categories(
   id serial primary key,
-  descricao text not null
+  description text not null
 );
 
-insert into categorias (descricao) values
+insert into categories (description) values
   ('Informática'),
   ('Celulares'),
   ('Beleza e Perfumaria'),
@@ -21,39 +21,39 @@ insert into categorias (descricao) values
   ('Bebê'),
   ('Games');
 
-create table produtos (
+create table products (
   id serial primary key,
-  descricao text not null,
-  quantidade_estoque integer not null,
-  valor integer not null,
-  categoria_id integer not null references categorias(id),
-  produto_imagem text
+  description text not null,
+  stock_qt integer not null,
+  value integer not null,
+  category_id integer not null references categories(id),
+  product_image text
 );
 
-create table clientes (
+create table customers (
   id serial primary key,
-  nome text not null,
+  name text not null,
   email text not null unique,
   cpf text not null unique,
-  cep text,
-  rua text,
-  numero text,
-  bairro text,
-  cidade text,
-  estado text
+  zip_code text,
+  street text,
+  number text,
+  neighborhood text,
+  city text,
+  state text
 );
 
-create table pedidos (
+create table orders (
   id serial primary key,
-  cliente_id integer not null references clientes(id),
-  observacao text,
-  valor_total integer not null
+  cliente_id integer not null references customers(id),
+  observation text,
+  total_value integer not null
 );
 
-create table pedido_produtos (
+create table product_order (
  id serial primary key,
- pedido_id integer references pedidos (id),
- produto_id integer references produtos (id),
- quantidade_produto integer not null,
- valor_produto integer not null
+ order_id integer references orders (id),
+ product_id integer references products (id),
+ product_qt integer not null,
+ product_value integer not null
 );
