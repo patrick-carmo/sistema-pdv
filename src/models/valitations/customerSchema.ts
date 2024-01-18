@@ -1,12 +1,5 @@
 import joi from 'joi';
-
-type Customer = {
-  name: string;
-  email: string;
-  cpf: string;
-  zipCode: string;
-  state: string;
-}
+import { Customer } from '../../entities/customerType'
 
 const customerSchema = joi
   .object({

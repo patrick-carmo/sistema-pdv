@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 
-const validateRequest =
+export const validateRequest =
   (schema: any) => async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (schema instanceof Array) {

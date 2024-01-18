@@ -1,11 +1,10 @@
 import knex from '../config/connect'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { User } from '../models/userType'
+import { User } from '../entities/userType'
 import { Request, Response } from 'express'
 
 export const userLogin = async (req: Request, res: Response) => {
-
   const { email, password }: User = req.body
 
   try {
@@ -22,7 +21,7 @@ export const userLogin = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.SECRET as string, {
-      expiresIn: '30d'
+      expiresIn: '30d',
     })
 
     const { password: _, ...userInfo } = user
