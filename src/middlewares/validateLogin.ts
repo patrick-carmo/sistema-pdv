@@ -14,7 +14,7 @@ export const loginVerify = async (req: UserRequest, res: Response, next: NextFun
     return res.status(401).json({ message: 'Token não encontrado' })
   }
 
-  const token = authorization.replace('Bearer', '').trim()
+  const token: string = authorization.replace('Bearer', '').trim()
 
   try {
     const { id } = jwt.verify(token, process.env.SECRET as string) as {
@@ -32,7 +32,7 @@ export const loginVerify = async (req: UserRequest, res: Response, next: NextFun
     req.user = userInfo
 
     next()
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof jwt.TokenExpiredError) {
       return res.status(401).json({ mensagem: 'Sessão expirada' })
     }

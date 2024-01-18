@@ -5,7 +5,8 @@ import { User } from '../models/userType'
 import { Request, Response } from 'express'
 
 export const userLogin = async (req: Request, res: Response) => {
-  const { email, password } = req.body
+
+  const { email, password }: User = req.body
 
   try {
     const user = await knex<User>('users').where({ email }).first()
