@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken'
 import knex from '../config/connect'
 import { Request, Response, NextFunction } from 'express'
-import { User } from '../entities/userType'
+import { User } from '../entities/types'
 
 interface UserRequest extends Request {
   user?: Omit<User, 'password'>
 }
 
-export const loginVerify = async (
+const loginVerify = async (
   req: UserRequest,
   res: Response,
   next: NextFunction
@@ -46,3 +46,5 @@ export const loginVerify = async (
     return res.status(500).json({ mensagem: 'Erro interno do servidor' })
   }
 }
+
+export default loginVerify

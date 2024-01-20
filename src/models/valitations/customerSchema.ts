@@ -1,5 +1,5 @@
 import joi from 'joi';
-import { Customer } from '../../entities/customerType'
+import { Customer } from '../../entities/types'
 
 const customerSchema = joi
   .object({
