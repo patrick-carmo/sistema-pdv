@@ -11,6 +11,10 @@ export type Customer = {
   email: string;
   cpf: string;
   zipCode: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
   state: string;
 }
 
