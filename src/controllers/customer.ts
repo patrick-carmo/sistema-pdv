@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { Customer } from '../entities/types'
 import filterObjectData from '../utils/filterObjectData'
 
-const registerCustomer = async (req: Request, res: Response) => {
+export const registerCustomer = async (req: Request, res: Response) => {
   const {
     name,
     email,
@@ -50,5 +50,28 @@ const registerCustomer = async (req: Request, res: Response) => {
     res.status(201).json(filteredData)
   } catch {
     return res.status(500).json({ message: 'Erro interno do servidor' })
+  }
+}
+
+
+const updateCustomer = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  const {
+    name,
+    email,
+    cpf,
+    zipCode,
+    street,
+    number,
+    neighborhood,
+    city,
+    state,
+  }: Customer = req.body
+
+  try{
+
+  }catch{
+    
   }
 }
