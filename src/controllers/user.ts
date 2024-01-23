@@ -11,9 +11,9 @@ export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password }: User = req.body
 
   try {
-    const thereEmail = await knex<User>('users').where({ email }).first()
+    const theresEmail = await knex<User>('users').where({ email }).first()
 
-    if (thereEmail) {
+    if (theresEmail) {
       return res.status(400).json({ message: 'E-mail já cadastrado' })
     }
 
@@ -25,7 +25,7 @@ export const registerUser = async (req: Request, res: Response) => {
         email,
         password: hashPassword,
       })
-      .returning(['nome', 'email'])
+      .returning(['name', 'email'])
 
     res.status(201).json(user[0])
   } catch {
@@ -64,8 +64,6 @@ export const updateUser = async (req: UserRequest, res: Response) => {
       .returning('*')
 
     req.user = updatedUser[0]
-
-    const { password: _, ...userInfo } = updatedUser[0]
 
     return res.status(204).send()
   } catch {

@@ -17,17 +17,17 @@ export const registerCustomer = async (req: Request, res: Response) => {
   }: Customer = req.body
 
   try {
-    const thereEmail = await knex<Customer>('customers')
+    const theresEmail = await knex<Customer>('customers')
       .where({ email })
       .first()
 
-    if (thereEmail) {
+    if (theresEmail) {
       return res.status(400).json({ message: 'E-mail já cadastrado' })
     }
 
-    const thereCpf = await knex<Customer>('customers').where({ cpf }).first()
+    const theresCpf = await knex<Customer>('customers').where({ cpf }).first()
 
-    if (thereCpf) {
+    if (theresCpf) {
       return res.status(400).json({ message: 'CPF já cadastrado' })
     }
 
@@ -53,10 +53,8 @@ export const registerCustomer = async (req: Request, res: Response) => {
   }
 }
 
-
-const updateCustomer = async (req: Request, res: Response) => {
+export const updateCustomer = async (req: Request, res: Response) => {
   const { id } = req.params
-
   const {
     name,
     email,
@@ -69,9 +67,76 @@ const updateCustomer = async (req: Request, res: Response) => {
     state,
   }: Customer = req.body
 
-  try{
+  try {
+    const theresCustomer = await knex<Customer>('customers')
+      .where('id', id)
+      .first()
 
+    if (!theresCustomer) {
+      return res.status(400).json({ message: 'Cliente não cadastrado' })
+    }
+
+    const theresEmail = await knex<Customer>('customers')
+      .where('id', id)
+      .first()
+
+    if (theresEmail) {
+      return res.status(400).json({ message: 'E-mail já cadastrado' })
+    }
+
+    const theresCpf = await knex<Customer>('customers')
+      .where({ cpf })
+      .whereNot('id', id)
+      .first()
+
+    if (theresCpf) {
+      return res.status(400).json({ message: 'CPF já cadastrado' })
+    }
+
+    await knex<Customer>('customers').where('id', id).update({
+      name,
+      email,
+      cpf,
+      zipCode,
+      street,
+      number,
+      neighborhood,
+      city,
+      state,
+    })
+
+    res.status(204).send()
+  } catch {
+    return res.status(500).json({ message: 'Erro interno do servidor' })
+  }
+}
+
+export const listCustomers = async (_: Request, res: Response) => {
+  try {
+    const customers = await knex<Customer>('customers')
+
+    const filteredData = customers.map(customer => filterObjectData(customer))
+
+    res.status(200).json(filteredData)
+  } catch {
+    res.status(500).json({ message: 'Erro interno do servidor' })
+  }
+}
+
+export const detailCustomer = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  try{
+    const customer = await knex<Customer>('customers').where('id', id).first()
+
+    if(!customer){
+      return res.status(400).json({ message: 'Cliente não cadastrado' })
+    }
+
+    const filteredData = filterObjectData(customer)
+
+    res.status(200).json(filteredData)
   }catch{
-    
+    res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
