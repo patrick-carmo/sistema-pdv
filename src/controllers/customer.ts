@@ -1,7 +1,7 @@
 import knex from '../config/connect'
 import { Request, Response } from 'express'
 import { Customer } from '../entities/types'
-import filterObjectData from '../utils/filterObjectData'
+import filterObjectData from '../utils/customer/filterObjectData'
 
 export const registerCustomer = async (req: Request, res: Response) => {
   const {
@@ -126,17 +126,17 @@ export const listCustomers = async (_: Request, res: Response) => {
 export const detailCustomer = async (req: Request, res: Response) => {
   const { id } = req.params
 
-  try{
+  try {
     const customer = await knex<Customer>('customers').where('id', id).first()
 
-    if(!customer){
+    if (!customer) {
       return res.status(400).json({ message: 'Cliente não cadastrado' })
     }
 
     const filteredData = filterObjectData(customer)
 
     res.status(200).json(filteredData)
-  }catch{
+  } catch {
     res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
