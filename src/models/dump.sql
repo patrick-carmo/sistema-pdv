@@ -24,7 +24,7 @@ insert into categories (description) values
 create table products (
   id serial primary key,
   description text not null,
-  stock_qt integer not null,
+  stock_qty integer not null,
   value integer not null,
   category_id integer not null references categories(id),
   product_image text

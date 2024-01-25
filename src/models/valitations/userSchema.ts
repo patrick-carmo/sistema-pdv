@@ -1,5 +1,5 @@
 import joi from 'joi'
-import { User } from '../../entities/types'
+import { User } from '../../types/types'
 
 const userSchema = joi.object({
   body: joi.object<User>({

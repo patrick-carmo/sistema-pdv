@@ -1,7 +1,7 @@
 import knex from '../config/connect'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { User } from '../entities/types'
+import { User } from '../types/types'
 import { Request, Response } from 'express'
 
 const userLogin = async (req: Request, res: Response) => {
@@ -14,15 +14,22 @@ const userLogin = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Usuário não encontrado' })
     }
 
-    const isValidPassword: boolean = await bcrypt.compare(password, user.password)
+    const isValidPassword: boolean = await bcrypt.compare(
+      password,
+      user.password
+    )
 
     if (!isValidPassword) {
       return res.status(400).json({ message: 'Senha inválida' })
     }
 
-    const token: string = jwt.sign({ id: user.id }, process.env.SECRET as string, {
-      expiresIn: '30d',
-    })
+    const token: string = jwt.sign(
+      { id: user.id },
+      process.env.SECRET as string,
+      {
+        expiresIn: '30d',
+      }
+    )
 
     const { password: _, ...userInfo } = user
 

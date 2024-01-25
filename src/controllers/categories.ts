@@ -1,6 +1,6 @@
 import knex from '../config/connect'
 import { Request, Response } from 'express'
-import { Categories } from '../entities/types'
+import { Categories } from '../types/types'
 
 const listCategories = async (_: Request, res: Response) => {
   try {

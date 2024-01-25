@@ -14,6 +14,6 @@ export const validateRequest =
       await schema.validateAsync(req)
       next()
     } catch (error: any) {
-      return res.status(400).json({ message: error.message})
+      return res.status(400).json({ message: error.message })
     }
   }

@@ -1,19 +1,15 @@
 import knex from '../config/connect'
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
-import { User } from '../entities/types'
+import { User } from '../types/types'
 
-interface UserRequest extends Request {
-  user?: Omit<User, 'password'>
-}
-
-export const registerUser = async (req: Request, res: Response) => {
+const registerUser = async (req: Request, res: Response) => {
   const { name, email, password }: User = req.body
 
   try {
-    const theresEmail = await knex<User>('users').where({ email }).first()
+    const emailExists = await knex<User>('users').where({ email }).first()
 
-    if (theresEmail) {
+    if (emailExists) {
       return res.status(400).json({ message: 'E-mail já cadastrado' })
     }
 
@@ -33,11 +29,11 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 }
 
-export const detailUser = async (req: UserRequest, res: Response) => {
+const detailUser = async (req: Request, res: Response) => {
   return res.status(200).json(req.user)
 }
 
-export const updateUser = async (req: UserRequest, res: Response) => {
+const updateUser = async (req: Request, res: Response) => {
   const { name, email, password }: User = req.body
 
   try {
@@ -70,3 +66,5 @@ export const updateUser = async (req: UserRequest, res: Response) => {
     return res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
+
+export { registerUser, detailUser, updateUser }

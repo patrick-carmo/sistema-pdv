@@ -1,5 +1,5 @@
-import joi from 'joi';
-import { Customer } from '../../entities/types'
+import joi from 'joi'
+import { Customer } from '../../types/types'
 
 const customerSchema = joi
   .object({
@@ -43,6 +43,6 @@ const customerSchema = joi
       }),
     }),
   })
-  .unknown();
+  .unknown()
 
-export default customerSchema;
+export default customerSchema

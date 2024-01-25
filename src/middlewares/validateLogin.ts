@@ -1,17 +1,9 @@
 import jwt from 'jsonwebtoken'
 import knex from '../config/connect'
 import { Request, Response, NextFunction } from 'express'
-import { User } from '../entities/types'
+import { User } from '../types/types'
 
-interface UserRequest extends Request {
-  user?: Omit<User, 'password'>
-}
-
-const loginVerify = async (
-  req: UserRequest,
-  res: Response,
-  next: NextFunction
-) => {
+const loginVerify = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
 
   if (!authorization) {

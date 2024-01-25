@@ -1,9 +1,8 @@
-import { Customer } from '../../entities/types'
+import { Customer } from '../../types/types'
 
 declare function ObjectKeys<T>(o: T): (keyof T)[]
 
 const filterObjectData = (data: Customer): Customer => {
-  
   const filteredData: any = {}
   ObjectKeys(data).forEach((key: keyof Customer) => {
     if (data[key] !== null) {
