@@ -54,6 +54,6 @@ create table product_order (
  id serial primary key,
  order_id integer references orders (id),
  product_id integer references products (id),
- product_qt integer not null,
+ product_qty integer not null,
  product_value integer not null
 );

@@ -1,6 +1,4 @@
-import { File } from '../../types/types'
-
-const validateImage = (file: File): string | null => {
+const validateImage = (file: Express.Multer.File): string | null => {
   const { size } = file
 
   const format = file.mimetype.split('/').splice(0, 1).join()

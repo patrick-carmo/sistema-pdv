@@ -32,9 +32,12 @@ export type Product = {
   product_image?: string | null
 }
 
-export type File = {
-  originalname: string
-  buffer: Buffer
-  mimetype: string
-  size: number
+export type ProductCategory = Product & { category_description: string }
+
+export type ProductOrder = {
+  readonly id: number
+  order_id: number
+  product_id: number
+  product_qty: number
+  product_value: number
 }

@@ -13,7 +13,7 @@ const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'E-mail já cadastrado' })
     }
 
-    const hashPassword = await bcrypt.hash(password, 10)
+    const hashPassword: string = await bcrypt.hash(password, 10)
 
     const user = await knex<User>('users')
       .insert({
@@ -39,10 +39,7 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     const { id, email: userEmail } = req.user as User
 
-    const user = await knex<User>('users')
-      .where({ email })
-      .whereNot({ email: userEmail })
-      .first()
+    const user = await knex<User>('users').where({ email }).whereNot({ email: userEmail }).first()
 
     if (user) {
       return res.status(400).json({ message: 'E-mail já cadastrado' })

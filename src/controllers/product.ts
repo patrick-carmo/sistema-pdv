@@ -2,16 +2,14 @@ import knex from '../config/connect'
 import { Request, Response } from 'express'
 import { uploadFile, deleteFile } from '../utils/aws/s3'
 import validateImage from '../utils/product/validateImage'
-import { Product, Categories } from '../types/types'
+import { Product, Categories, ProductCategory, ProductOrder } from '../types/types'
 
 const registerProduct = async (req: Request, res: Response) => {
   const { description, stock_qty, value, category_id }: Product = req.body
   const { file: product_image } = req
 
   try {
-    const categoryExists = await knex<Product>('categories')
-      .where({ id: category_id })
-      .first()
+    const categoryExists = await knex<Product>('categories').where({ id: category_id }).first()
 
     if (!categoryExists) {
       return res.status(400).json({ message: 'Categoria não encontrada' })
@@ -26,21 +24,22 @@ const registerProduct = async (req: Request, res: Response) => {
     }
 
     await knex.transaction(async db => {
-      interface CustomError extends Error {
+      class CustomError extends Error {
         db: boolean
         status: number
+
+        constructor(message: string, status: number) {
+          super(message)
+          this.db = true
+          this.status = status
+        }
       }
 
-      const errorMessage = (message: string, status: number): CustomError => {
-        const error = new Error() as CustomError
-        error.status = status
-        error.db = true
-        throw error
+      const errorMessage = (message: string, status: number) => {
+        throw new CustomError(message, status)
       }
 
-      const product = await db<Product>('products')
-        .insert(dataProduct)
-        .returning('*')
+      const product = await db<Product>('products').insert(dataProduct).returning('*')
 
       if (product_image) {
         const errorValidateImage = validateImage(product_image)
@@ -49,10 +48,7 @@ const registerProduct = async (req: Request, res: Response) => {
           errorMessage(errorValidateImage, 400)
         }
 
-        const file = await uploadFile(
-          product_image,
-          `produtos/${product[0].id}`
-        )
+        const file = await uploadFile(product_image, `produtos/${product[0].id}`)
 
         if (file instanceof Error) {
           errorMessage('Erro ao salvar imagem no servidor', 500)
@@ -90,9 +86,7 @@ const updateProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Produto não cadastrado' })
     }
 
-    const categoryExists = await knex<Categories>('categories')
-      .where({ id: category_id })
-      .first()
+    const categoryExists = await knex<Categories>('categories').where({ id: category_id }).first()
 
     if (!categoryExists) {
       return res.status(400).json({ message: 'Categoria não cadastrada' })
@@ -111,12 +105,10 @@ const updateProduct = async (req: Request, res: Response) => {
       if (validateError) {
         return res.status(400).json({ message: validateError })
       }
-      if (
-        product_image.originalname as unknown as string !== existingProduct.product_image
-      ) {
+      if ((product_image.originalname as unknown as string) !== existingProduct.product_image) {
         const deletionError = await deleteFile(updatedProduct.product_image as string)
         if (deletionError) {
-          throw new Error('Erro interno do servidor')
+          return res.status(500).json({ message: 'Erro interno do servidor' })
         }
       }
       const file = await uploadFile(product_image, `products/${id}`)
@@ -127,10 +119,7 @@ const updateProduct = async (req: Request, res: Response) => {
 
       updatedProduct.product_image = file
 
-      await knex('products')
-        .where({ id })
-        .update({ product_image: updatedProduct.product_image })
-        .returning('*')
+      await knex('products').where({ id }).update({ product_image: updatedProduct.product_image }).returning('*')
     }
 
     return res.status(200).json(updatedProduct)
@@ -139,4 +128,77 @@ const updateProduct = async (req: Request, res: Response) => {
   }
 }
 
-export { registerProduct, updateProduct }
+const listProduct = async (req: Request, res: Response) => {
+  const { category_id } = req.query
+
+  try {
+    const query = knex('products')
+      .select<ProductCategory[]>('products.*', 'categories.description as category_description')
+      .join('categories', 'categories.id', '=', 'products.category_id')
+
+    if (category_id) {
+      query.where({ category_id })
+    }
+
+    const product = await query
+
+    return res.status(200).json(product)
+  } catch {
+    return res.status(500).json({ message: 'Erro interno do servidor' })
+  }
+}
+
+const detailProduct = async (req: Request, res: Response) => {
+  const { id } = req.params as unknown as Product
+
+  try {
+    const product = await knex('products')
+      .select<ProductCategory>('products.*', 'categories.description as category_description')
+      .join('categories', 'products.category_id', '=', 'categories.id')
+      .where({ 'products.id': id })
+      .first()
+
+    if (!product) {
+      return res.status(400).json({ message: 'Produto não encontrado' })
+    }
+
+    return res.status(200).json(product)
+  } catch {
+    return res.status(500).json({ message: 'Erro interno do servidor' })
+  }
+}
+
+const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = req.params as unknown as Product
+
+  try {
+    const product = await knex<Product>('products').where({ id }).first()
+
+    if (!product) {
+      return res.status(400).json({ message: 'Produto não encontrado' })
+    }
+
+    const productOrder = await knex<ProductOrder>('product_order').where({ product_id: id }).first()
+
+    if (productOrder) {
+      return res.status(400).json({
+        message: 'O produto não pode ser excluído pois está vinculado a um pedido',
+      })
+    }
+
+    if (product.product_image) {
+      const deletionError = await deleteFile(product.product_image)
+      if (deletionError) {
+        return res.status(500).json({ message: 'Erro interno do servidor' })
+      }
+    }
+
+    await knex('products').where({ id }).delete()
+
+    return res.status(204).send()
+  } catch {
+    return res.status(500).json({ message: 'Erro interno do servidor' })
+  }
+}
+
+export { registerProduct, updateProduct, listProduct, detailProduct, deleteProduct }

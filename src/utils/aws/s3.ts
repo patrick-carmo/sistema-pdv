@@ -1,5 +1,4 @@
 import aws from 'aws-sdk'
-import { File } from '../../types/types'
 
 const s3 = new aws.S3({
   endpoint: process.env.ENDPOINT_S3,
@@ -10,10 +9,7 @@ const s3 = new aws.S3({
   },
 })
 
-const uploadFile = async (
-  file: File,
-  folder: string
-): Promise<string | Error> => {
+const uploadFile = async (file: Express.Multer.File, folder: string): Promise<string | Error> => {
   const { originalname: Key, buffer: Body, mimetype: ContentType } = file
 
   try {
