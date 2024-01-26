@@ -45,7 +45,7 @@ create table customers (
 
 create table orders (
   id serial primary key,
-  customers_id integer not null references customers(id),
+  customer_id integer not null references customers(id),
   observation text,
   total_value integer not null
 );

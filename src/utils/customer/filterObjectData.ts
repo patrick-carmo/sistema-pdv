@@ -1,10 +1,11 @@
 import { Customer } from '../../types/types'
 
-declare function ObjectKeys<T>(o: T): (keyof T)[]
+type PartialCustomer = Partial<Customer> & { [key: string]: string | number }
 
-const filterObjectData = (data: Customer): Customer => {
-  const filteredData: any = {}
-  ObjectKeys(data).forEach((key: keyof Customer) => {
+const filterObjectData = (data: PartialCustomer): Customer => {
+  const filteredData: PartialCustomer = {}
+
+  Object.keys(data).forEach((key) => {
     if (data[key] !== null) {
       filteredData[key] = data[key]
     }

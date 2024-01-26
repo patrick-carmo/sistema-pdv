@@ -4,7 +4,7 @@ import { Customer } from '../types/types'
 import filterObjectData from '../utils/customer/filterObjectData'
 
 const registerCustomer = async (req: Request, res: Response) => {
-  const { name, email, cpf, zipCode, street, number, neighborhood, city, state }: Customer = req.body
+  const { name, email, cpf, zip_code, street, number, neighborhood, city, state }: Customer = req.body
 
   try {
     const emailExists = await knex<Customer>('customers').where({ email }).first()
@@ -24,7 +24,7 @@ const registerCustomer = async (req: Request, res: Response) => {
         name,
         email,
         cpf,
-        zipCode,
+        zip_code,
         street,
         number,
         neighborhood,
@@ -42,33 +42,33 @@ const registerCustomer = async (req: Request, res: Response) => {
 }
 
 const updateCustomer = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const { name, email, cpf, zipCode, street, number, neighborhood, city, state }: Customer = req.body
+  const { id } = req.params as unknown as { id: number }
+  const { name, email, cpf, zip_code, street, number, neighborhood, city, state }: Customer = req.body
 
   try {
-    const customerExists = await knex<Customer>('customers').where('id', id).first()
+    const customerExists = await knex<Customer>('customers').where({ id }).first()
 
     if (!customerExists) {
       return res.status(400).json({ message: 'Cliente não cadastrado' })
     }
 
-    const emailExists = await knex<Customer>('customers').where('id', id).first()
+    const emailExists = await knex<Customer>('customers').where({ email }).whereNot({ id }).first()
 
     if (emailExists) {
       return res.status(400).json({ message: 'E-mail já cadastrado' })
     }
 
-    const cpfExists = await knex<Customer>('customers').where({ cpf }).whereNot('id', id).first()
+    const cpfExists = await knex<Customer>('customers').where({ cpf }).whereNot({ id }).first()
 
     if (cpfExists) {
       return res.status(400).json({ message: 'CPF já cadastrado' })
     }
 
-    await knex<Customer>('customers').where('id', id).update({
+    await knex<Customer>('customers').where({ id }).update({
       name,
       email,
       cpf,
-      zipCode,
+      zip_code,
       street,
       number,
       neighborhood,

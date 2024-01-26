@@ -21,12 +21,13 @@ const customerSchema = joi.object({
       .pattern(/^[0-9]+$/)
       .messages({
         'any.required': 'O campo cpf é obrigatório',
+        'string.base': 'O campo cpf deve ser uma string',
         'string.empty': 'O campo cpf é obrigatório',
-        'string.min': 'O campo cpf deve ter pelo menos 11 dígitos',
-        'string.max': 'O campo cpf deve ter no máximo 11 dígitos',
+        'string.min': 'O campo cpf deve ter exatos 11 dígitos',
+        'string.max': 'O campo cpf deve ter exatos 11 dígitos',
         'string.pattern.base': 'O CPF deve conter apenas números',
       }),
-    zipCode: joi
+    zip_code: joi
       .string()
       .min(8)
       .max(8)

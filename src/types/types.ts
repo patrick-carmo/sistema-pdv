@@ -10,7 +10,7 @@ export type Customer = {
   name: string
   email: string
   cpf: string
-  zipCode?: string
+  zip_code?: string
   street?: string
   number?: string
   neighborhood?: string
