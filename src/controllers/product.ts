@@ -74,15 +74,15 @@ const registerProduct = async (req: Request, res: Response) => {
 
 const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params
-  const { description, stock_qty, value, category_id } = req.body
+  const { description, stock_qty, value, category_id }: ProductCategory = req.body
   const { file: product_image } = req
 
   try {
-    const existingProduct = await knex<Product>('products')
-      .where({ id: Number(id) })
+    const product = await knex<Product>('products')
+      .where('id', id)
       .first()
 
-    if (!existingProduct) {
+    if (!product) {
       return res.status(400).json({ message: 'Produto não cadastrado' })
     }
 
@@ -97,15 +97,15 @@ const updateProduct = async (req: Request, res: Response) => {
       stock_qty,
       value,
       category_id,
-      product_image: existingProduct.product_image,
+      product_image: product.product_image,
     }
 
     if (product_image) {
-      const validateError = validateImage(product_image)
+      const validateError: string | null = validateImage(product_image)
       if (validateError) {
         return res.status(400).json({ message: validateError })
       }
-      if ((product_image.originalname as unknown as string) !== existingProduct.product_image) {
+      if ((product_image.originalname as unknown as string) !== product.product_image) {
         const deletionError = await deleteFile(updatedProduct.product_image as string)
         if (deletionError) {
           return res.status(500).json({ message: 'Erro interno do servidor' })

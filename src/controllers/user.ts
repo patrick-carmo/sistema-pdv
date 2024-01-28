@@ -45,7 +45,7 @@ const updateUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'E-mail já cadastrado' })
     }
 
-    const hashPassword = await bcrypt.hash(password, 10)
+    const hashPassword: string = await bcrypt.hash(password, 10)
 
     const updatedUser = await knex<User>('users')
       .where({ id })

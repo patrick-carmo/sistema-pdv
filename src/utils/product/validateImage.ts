@@ -1,7 +1,7 @@
 const validateImage = (file: Express.Multer.File): string | null => {
   const { size } = file
 
-  const format = file.mimetype.split('/').splice(0, 1).join()
+  const format: string = file.mimetype.split('/').splice(0, 1).join()
 
   if (format !== 'image') {
     return 'Arquivo não é uma imagem'

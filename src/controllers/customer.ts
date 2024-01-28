@@ -33,7 +33,7 @@ const registerCustomer = async (req: Request, res: Response) => {
       })
       .returning('*')
 
-    const filteredData = filterObjectData(customer[0])
+    const filteredData: Customer = filterObjectData(customer[0])
 
     res.status(201).json(filteredData)
   } catch {
@@ -86,7 +86,7 @@ const listCustomer = async (_: Request, res: Response) => {
   try {
     const customers = await knex<Customer>('customers')
 
-    const filteredData = customers.map(customer => filterObjectData(customer))
+    const filteredData = customers.map<Customer>(customer => filterObjectData(customer))
 
     res.status(200).json(filteredData)
   } catch {
@@ -104,7 +104,7 @@ const detailCustomer = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Cliente não cadastrado' })
     }
 
-    const filteredData = filterObjectData(customer)
+    const filteredData: Customer = filterObjectData(customer)
 
     res.status(200).json(filteredData)
   } catch {

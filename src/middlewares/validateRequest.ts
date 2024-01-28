@@ -18,7 +18,6 @@ export const validateRequest = (schema: ObjectSchema) => async (req: Request, re
       await schema.validateAsync({ params: req.params })
     }
     if (Object.keys(req.query).length !== 0) {
-      console.log(req.query)
       await schema.validateAsync({ query: req.query })
     }
 

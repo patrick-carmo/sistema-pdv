@@ -41,3 +41,26 @@ export type ProductOrder = {
   product_qty: number
   product_value: number
 }
+
+export type Order = {
+  readonly id: number
+  customer_id: number
+  observation?: string
+  total_value: number
+  product_order: Pick<ProductOrder, 'product_id' | 'product_qty'>[]
+}
+
+export type ProcessedOrder = {
+  order: Omit<Order, 'product_order'>
+  pedido_produtos: {
+    id: number
+    quantidade_produto: number
+    valor_produto: number
+    pedido_id: number
+    produto_id: number
+  }[]
+}
+
+export type ValidateOrder = {
+  [key: string]: Pick<ProductOrder , 'product_id' | 'product_qty'>;
+}
