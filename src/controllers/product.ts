@@ -92,7 +92,8 @@ const updateProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Categoria não cadastrada' })
     }
 
-    const updatedProduct: Omit<Product, 'id'> = {
+    const updatedProduct: Product = {
+      id: Number(id),
       description,
       stock_qty,
       value,
@@ -120,6 +121,12 @@ const updateProduct = async (req: Request, res: Response) => {
       updatedProduct.product_image = file
 
       await knex('products').where({ id }).update({ product_image: updatedProduct.product_image }).returning('*')
+    }
+
+    const updated = await knex<Product>('products').where('id', id).update(updatedProduct).returning('*')
+
+    if (!updated) {
+      return res.status(500).json({ message: 'Erro interno do servidor' })
     }
 
     return res.status(200).json(updatedProduct)

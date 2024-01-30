@@ -52,13 +52,7 @@ export type Order = {
 
 export type ProcessedOrder = {
   order: Omit<Order, 'product_order'>
-  pedido_produtos: {
-    id: number
-    quantidade_produto: number
-    valor_produto: number
-    pedido_id: number
-    produto_id: number
-  }[]
+  product_order: ProductOrder[]
 }
 
 export type ValidateOrder = {
