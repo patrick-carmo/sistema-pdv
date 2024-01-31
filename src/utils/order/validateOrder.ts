@@ -1,7 +1,9 @@
 import knex from '../../config/connect'
 import { Product, ValidateOrder } from '../../types/types'
 
-const validateOrder = async (product_order: ValidateOrder) => {
+const validateOrder = async (
+  product_order: ValidateOrder
+): Promise<Error | { errorMessage: string[]; total_value: number }> => {
   try {
     const errorStock: string[] = []
     const errorProduct: string[] = []
@@ -11,7 +13,7 @@ const validateOrder = async (product_order: ValidateOrder) => {
 
     for (const [key, value] of data) {
       const { product_id, product_qty } = product_order[key]
-      const product: Product = await knex('products').where({ id: value.product_id }).first()
+      const product = await knex<Product>('products').where({ id: value.product_id }).first()
 
       if (!product) {
         errorProduct.push(`Produto ${product_id} não encontrado`)
@@ -28,12 +30,11 @@ const validateOrder = async (product_order: ValidateOrder) => {
       total_value += product_value * product_qty
     }
 
-    const errorMessage = [...errorProduct, ...errorStock]
+    const errorMessage: string[] = [...errorProduct, ...errorStock]
 
     return { errorMessage, total_value }
-
   } catch (error: any) {
-    return error.message as string
+    return error as Error
   }
 }
 

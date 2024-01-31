@@ -7,9 +7,9 @@ import listCategories from '../controllers/categories'
 import { registerUser, detailUser, updateUser } from '../controllers/user'
 import { registerProduct, updateProduct, listProduct, detailProduct, deleteProduct } from '../controllers/product'
 import { registerCustomer, updateCustomer, listCustomer, detailCustomer } from '../controllers/customer'
-import { registerOrder } from '../controllers/order'
+import { listOrder, registerOrder } from '../controllers/order'
 
-import { validateRequest } from '../middlewares/validateRequest'
+import validateRequest from '../middlewares/validateRequest'
 
 import loginSchema from '../models/valitations/loginSchema'
 import userSchema from '../models/valitations/userSchema'
@@ -40,5 +40,6 @@ route.get('/cliente', listCustomer)
 route.get('/cliente/:id', validateRequest(customerSchema), detailCustomer)
 
 route.post('/pedido', validateRequest(orderSchema), registerOrder)
+route.get('/pedido', validateRequest(orderSchema), listOrder)
 
 export default route

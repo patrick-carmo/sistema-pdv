@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import { ObjectSchema } from 'joi'
 
-export const validateRequest = (schema: ObjectSchema) => async (req: Request, res: Response, next: NextFunction) => {
+const validateRequest = (schema: ObjectSchema) => async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (
+      req.method !== 'GET' &&
       Object.keys(req.body).length === 0 &&
       Object.keys(req.params).length === 0 &&
       Object.keys(req.query).length === 0
@@ -26,3 +27,5 @@ export const validateRequest = (schema: ObjectSchema) => async (req: Request, re
     return res.status(400).json({ message: error.message })
   }
 }
+
+export default validateRequest
