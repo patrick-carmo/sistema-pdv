@@ -27,7 +27,14 @@ create table products (
   stock_qty integer not null,
   value integer not null,
   category_id integer not null references categories(id),
-  product_image text
+);
+
+create table product_images (
+  id serial primary key,
+  product_id integer not null references products(id),
+  folder_id text not null,
+  image_id text not null,
+  image_link text not null
 );
 
 create table customers (

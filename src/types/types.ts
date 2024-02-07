@@ -1,12 +1,12 @@
 export type User = {
-  readonly id: number
+  id?: number
   name: string
   email: string
   password: string
 }
 
 export type Customer = {
-  readonly id: number
+  id?: number
   name: string
   email: string
   cpf: string
@@ -19,23 +19,30 @@ export type Customer = {
 }
 
 export type Categories = {
-  readonly id: number
+  id?: number
   description: string
 }
 
 export type Product = {
-  readonly id: number
+  id?: number
   description: string
   stock_qty: number
   value: number
-  readonly category_id: number
-  product_image?: string | null
+  category_id: number
 }
 
-export type ProductCategory = Product & { category_description: string }
+export type ProductImage = {
+  id?: number
+  product_id: number
+  folder_id: string
+  image_id: string
+  image_link: string
+}
+
+export type ProductCategory = Product & { category_description: string, image_link: string}
 
 export type ProductOrder = {
-  readonly id: number
+  id?: number
   order_id: number
   product_id: number
   product_qty: number
@@ -43,7 +50,7 @@ export type ProductOrder = {
 }
 
 export type Order = {
-  readonly id: number
+  id?: number
   customer_id: number
   observation?: string
   total_value: number
@@ -56,5 +63,5 @@ export type ProcessedOrder = {
 }
 
 export type ValidateOrder = {
-  [key: string]: Pick<ProductOrder , 'product_id' | 'product_qty'>;
+  [key: string]: Pick<ProductOrder, 'product_id' | 'product_qty'>
 }

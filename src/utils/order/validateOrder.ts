@@ -3,7 +3,7 @@ import { Product, ValidateOrder } from '../../types/types'
 
 const validateOrder = async (
   product_order: ValidateOrder
-): Promise<Error | { errorMessage: string[]; total_value: number }> => {
+): Promise<{ errorMessage: string[]; total_value: number }> => {
   try {
     const errorStock: string[] = []
     const errorProduct: string[] = []
@@ -34,7 +34,7 @@ const validateOrder = async (
 
     return { errorMessage, total_value }
   } catch (error: any) {
-    return error as Error
+    throw error
   }
 }
 

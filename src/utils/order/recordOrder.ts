@@ -1,7 +1,7 @@
 import knex from '../../config/connect'
 import { Order, ProductOrder, Product, ProcessedOrder } from '../../types/types'
 
-const recordOrder = async (dataOrder: Omit<Order, 'id'>): Promise<ProcessedOrder | Error> => {
+const recordOrder = async (dataOrder: Order): Promise<ProcessedOrder> => {
   try {
     const { customer_id, observation, product_order, total_value } = dataOrder
 
@@ -38,7 +38,7 @@ const recordOrder = async (dataOrder: Omit<Order, 'id'>): Promise<ProcessedOrder
 
     return data[0]
   } catch (error: any) {
-    return error
+    throw error
   }
 }
 

@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import handlebars from 'handlebars'
 import { Order } from '../../types/types'
 
-const htmlCompiler = async (file: string, name: string, order: Order): Promise<string | Error> => {
+const htmlCompiler = async (file: string, name: string, order: Order): Promise<string> => {
   try {
     const html = await fs.readFile(file)
     const compiler = handlebars.compile(html.toString())
@@ -16,7 +16,7 @@ const htmlCompiler = async (file: string, name: string, order: Order): Promise<s
 
     return htmlString
   } catch (error: any) {
-    return error
+    throw error
   }
 }
 

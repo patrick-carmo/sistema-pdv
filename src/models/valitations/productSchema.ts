@@ -2,7 +2,7 @@ import joi from 'joi'
 import { Product } from '../../types/types'
 
 const productSchema = joi.object({
-  body: joi.object<Product>({
+  body: joi.object<Product & { product_image: string }>({
     description: joi.string().required().min(4).messages({
       'any.required': 'O campo descrição é obrigatório',
       'string.empty': 'O campo descrição é obrigatório',
@@ -39,7 +39,7 @@ const productSchema = joi.object({
         'number.positive': 'O id da categoria deve ser um número positivo',
         'number.integer': 'O id da categoria deve ser um número inteiro',
       }),
-    }) 
+    })
     .unknown(),
   params: joi.object({
     id: joi.number().integer().positive().required().messages({
@@ -49,7 +49,7 @@ const productSchema = joi.object({
       'number.positive': 'O id do produto deve ser um número positivo',
       'number.integer': 'O id do produto deve ser um número inteiro',
     }),
-  })
+  }),
 })
 
 export default productSchema

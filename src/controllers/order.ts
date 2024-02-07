@@ -19,17 +19,13 @@ const registerOrder = async (req: Request, res: Response) => {
 
     const validationResult = await validateOrder(product_order as unknown as ValidateOrder)
 
-    if (validationResult instanceof Error) {
-      return res.status(400).json({ message: 'Erro interno do servidor' })
-    }
-
     const { errorMessage, total_value } = validationResult
 
     if (errorMessage.length > 0) {
       return res.status(400).json({ message: errorMessage })
     }
 
-    const dataOrder: Omit<Order, 'id'> = {
+    const dataOrder: Order = {
       customer_id,
       observation,
       product_order,
@@ -38,17 +34,9 @@ const registerOrder = async (req: Request, res: Response) => {
 
     const order = await recordOrder(dataOrder)
 
-    if (order instanceof Error) {
-      return res.status(500).json({ message: 'Erro interno do servidor' })
-    }
-
     const { name } = customer
 
     const html = await htmlCompiler('src/models/email/orderTemplate.html', name, order.order as Order)
-
-    if (html instanceof Error) {
-      return res.status(500).json({ message: 'Erro interno do servidor' })
-    }
 
     const mailOptions = {
       from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`,
