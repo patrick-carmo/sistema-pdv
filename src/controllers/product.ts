@@ -37,8 +37,8 @@ const registerProduct = async (req: Request, res: Response) => {
     const fileCreated = await registerFullProduct(product_image, dataProduct, null)
 
     return res.status(201).json(fileCreated)
-  } catch (error: any) {
-    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
+  } catch {
+    return res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 
@@ -152,12 +152,6 @@ const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.params as unknown as Product
 
   try {
-    const product = await knex<Product>('products').where({ id }).first()
-
-    if (!product) {
-      return res.status(400).json({ message: 'Produto não encontrado' })
-    }
-
     const productOrder = await knex<ProductOrder>('product_order').where({ product_id: id }).first()
 
     if (productOrder) {
@@ -166,14 +160,22 @@ const deleteProduct = async (req: Request, res: Response) => {
       })
     }
 
-    // if (product.product_image) {
-    //   const deletionError = await deleteFile(product.product_image)
-    //   if (deletionError) {
-    //     return res.status(500).json({ message: 'Erro interno do servidor' })
-    //   }
-    // }
+    const product = await knex<Product>('products').where({ id }).first()
 
-    await knex('products').where({ id }).delete()
+    if (!product) {
+      return res.status(400).json({ message: 'Produto não encontrado' })
+    }
+
+    const productImage = await knex<ProductImage>('product_images').where({ product_id: id }).first()
+
+    if (productImage) {
+      await deleteFile(productImage.image_id)
+    }
+
+    await knex.transaction(async db => {
+      await db<ProductImage>('product_images').where({ product_id: id }).delete()
+      await db<Product>('products').where({ id }).delete()
+    })
 
     return res.status(204).send()
   } catch {

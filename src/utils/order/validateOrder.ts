@@ -16,14 +16,14 @@ const validateOrder = async (
       const product = await knex<Product>('products').where({ id: value.product_id }).first()
 
       if (!product) {
-        errorProduct.push(`Produto ${product_id} não encontrado`)
+        errorProduct.push(`O produto com id "${product_id}" não foi encontrado`)
         continue
       }
 
       const { stock_qty, description, value: product_value } = product
 
       if (stock_qty - product_qty < 0) {
-        errorStock.push(`Produto ${description} sem estoque suficiente. Estoque disponível: ${stock_qty}`)
+        errorStock.push(`Produto "${description}" sem estoque suficiente. Estoque disponível: ${stock_qty}`)
         continue
       }
 

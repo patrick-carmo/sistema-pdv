@@ -30,12 +30,12 @@ const loginVerify = async (req: Request, res: Response, next: NextFunction) => {
     next()
   } catch (error: any) {
     if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({ mensagem: 'Sessão expirada' })
+      return res.status(401).json({ message: 'Sessão expirada' })
     }
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ mensagem: 'Não autorizado!' })
+      return res.status(401).json({ message: 'Não autorizado!' })
     }
-    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
+    return res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 

@@ -42,8 +42,6 @@ const searchFolder = async (identifier: string): Promise<string | null> => {
       fields: 'files(id, name)',
     })
 
-    console.log('Google Drive API response:', res.data)
-
     const folders = res.data.files
 
     if (!folders || folders.length === 0) {
@@ -61,7 +59,7 @@ const searchFolder = async (identifier: string): Promise<string | null> => {
 const uploadFile = async (
   data: Express.Multer.File,
   folder: string
-): Promise<{ id: string; webViewLink: string }> => {
+): Promise<{ image_id: string; image_link: string }> => {
   const { path, originalname, mimetype } = data
   const service = google.drive({ version: 'v3', auth: await authorization() })
 
@@ -79,10 +77,15 @@ const uploadFile = async (
     const file = await service.files.create({
       requestBody: fileMetadata,
       media: media,
-      fields: 'id, webViewLink',
+      fields: 'id',
     })
 
-    return file.data as { id: string; webViewLink: string }
+    const data = {
+      image_id: file.data.id as string,
+      image_link: `https://drive.google.com/uc?id=${file.data.id}`,
+    }
+
+    return data
   } catch (error: any) {
     throw error
   }
@@ -110,7 +113,6 @@ const deleteFile = async (fileId: string): Promise<null> => {
 //     const folders = response.data.files
 
 //     if (!folders || folders.length === 0) {
-//       console.log('Não há pastas para excluir.')
 //       return
 //     }
 

@@ -26,7 +26,7 @@ create table products (
   description text not null,
   stock_qty integer not null,
   value integer not null,
-  category_id integer not null references categories(id),
+  category_id integer not null references categories(id)
 );
 
 create table product_images (

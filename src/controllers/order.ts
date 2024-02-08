@@ -79,8 +79,8 @@ const listOrder = async (req: Request, res: Response) => {
     const formattedList: ProcessedOrder[] = formatList(data)
 
     return res.status(200).json(formattedList)
-  } catch (error) {
-    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
+  } catch {
+    return res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 

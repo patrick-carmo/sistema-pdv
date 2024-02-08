@@ -8,19 +8,20 @@ const registerFullProduct = async (
   update: string | null
 ) => {
   try {
-    const folder_id = update ? update : await searchFolder(dataProduct.description)
+    const folder = update ? update : await searchFolder(dataProduct.description)
 
-    const folder = folder_id ?? (await createFolder(dataProduct.description))
+    const folder_id = folder ?? (await createFolder(dataProduct.description))
 
-    const file = await uploadFile(product_image, folder)
+    const { image_id, image_link } = await uploadFile(product_image, folder_id)
 
     const commit = await knex.transaction(async db => {
       const { id } = dataProduct
+      dataProduct.id = undefined
 
       if (!update) {
         const product = await db<Product>('products').insert(dataProduct).returning('*')
         const image = await db<ProductImage>('product_images')
-          .insert({ product_id: product[0].id, folder_id: folder, image_id: file.id, image_link: file.webViewLink })
+          .insert({ product_id: product[0].id, folder_id, image_id, image_link })
           .returning('*')
 
         const formattedData: Product & Pick<ProductImage, 'image_link'> = {
@@ -34,7 +35,7 @@ const registerFullProduct = async (
       const product = await db<Product>('products').where({ id }).update(dataProduct).returning('*')
       const image = await db<ProductImage>('product_images')
         .where({ product_id: id })
-        .update({ folder_id: folder, image_id: file.id, image_link: file.webViewLink })
+        .update({ folder_id, image_id, image_link })
         .returning('*')
 
       const formattedData: Product & Pick<ProductImage, 'image_link'> = {
