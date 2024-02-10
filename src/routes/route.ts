@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import multer from '../utils/multer/multer'
+import multerProduct from '../utils/multer/multerProduct'
 
 import userLogin from '../controllers/userAuth'
 import loginVerify from '../middlewares/validateLogin'
@@ -28,8 +28,8 @@ route.use(loginVerify)
 route.get('/usuario', detailUser)
 route.put('/usuario', validateRequest(userSchema), updateUser)
 
-route.post('/produto', multer.single('product_image'), validateRequest(productSchema), registerProduct)
-route.put('/produto/:id', multer.single('product_image'), validateRequest(productSchema), updateProduct)
+route.post('/produto', multerProduct, validateRequest(productSchema), registerProduct)
+// route.put('/produto/:id', multerProduct, validateRequest(productSchema), updateProduct)
 route.get('/produto', validateRequest(productSchema), listProduct)
 route.get('/produto/:id', validateRequest(productSchema), detailProduct)
 route.delete('/produto/:id', validateRequest(productSchema), deleteProduct)

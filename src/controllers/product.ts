@@ -2,7 +2,6 @@ import knex from '../config/connect'
 import { Request, Response } from 'express'
 import { deleteFile } from '../utils/google/drive'
 import { registerFullProduct } from '../utils/google/product'
-import validateImage from '../utils/product/validateImage'
 import { Product, Categories, ProductCategory, ProductOrder, ProductImage } from '../types/types'
 
 const registerProduct = async (req: Request, res: Response) => {
@@ -26,12 +25,6 @@ const registerProduct = async (req: Request, res: Response) => {
     if (!product_image) {
       const product = await knex<Product>('products').insert(dataProduct).returning('*')
       return res.status(201).json(product[0])
-    }
-
-    const imageValidationError = validateImage(product_image)
-
-    if (imageValidationError) {
-      return res.status(400).json({ message: imageValidationError })
     }
 
     const fileCreated = await registerFullProduct(product_image, dataProduct, null)
@@ -76,12 +69,6 @@ const updateProduct = async (req: Request, res: Response) => {
       }
 
       return res.status(200).json(updatedProduct)
-    }
-
-    const imageValidationError = validateImage(product_image)
-
-    if (imageValidationError) {
-      return res.status(400).json({ message: imageValidationError })
     }
 
     const image = await knex<ProductImage>('product_images').where({ product_id: id }).first()

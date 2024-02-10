@@ -19,7 +19,9 @@ const registerFullProduct = async (
       dataProduct.id = undefined
 
       if (!update) {
+        
         const product = await db<Product>('products').insert(dataProduct).returning('*')
+
         const image = await db<ProductImage>('product_images')
           .insert({ product_id: product[0].id, folder_id, image_id, image_link })
           .returning('*')
@@ -33,6 +35,7 @@ const registerFullProduct = async (
       }
 
       const product = await db<Product>('products').where({ id }).update(dataProduct).returning('*')
+      
       const image = await db<ProductImage>('product_images')
         .where({ product_id: id })
         .update({ folder_id, image_id, image_link })
