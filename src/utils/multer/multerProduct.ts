@@ -14,11 +14,14 @@ const upload = multer({
   },
 })
 
-const multerProduct = (req: Request, res: Response, next: NextFunction) => {
-  upload.single('product_image')(req, res, (error: any) => {
+const multerProduct = (field: string) => (req: Request, res: Response, next: NextFunction) => {
+  upload.single(field)(req, res, (error: any) => {
     if (error) {
       if (error.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ message: 'O Arquivo é muito grande. Tamanho permitido: 4Mb' })
+      }
+      if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+        return res.status(400).json({ message: 'Apenas um arquivo é permitido' })
       }
 
       return res.status(400).json({ message: error.message })
