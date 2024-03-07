@@ -58,27 +58,32 @@ const listOrder = async (req: Request, res: Response) => {
 
   try {
     const query = knex('orders')
-      .select<ProcessedOrder[]>(
+      .select(
         'orders.id as order_id',
         'orders.total_value',
         'orders.observation',
         'orders.customer_id',
-        'product_order.id as product_order_id',
-        'product_order.product_qty',
-        'product_order.product_value',
-        'product_order.order_id as p_product_order_id',
-        'product_order.product_id as p_product_product_id'
+        knex.raw(`json_agg(
+          json_build_object(
+            'id', product_order.id,
+            'product_qty', product_order.product_qty,
+            'product_value', product_order.product_value,
+            'order_id', product_order.order_id,
+            'product_id', product_order.product_id
+          )
+        ) as product_order`)
       )
-      .leftJoin('product_order', 'orders.id', '=', 'product_order.order_id');
+      .leftJoin('product_order', 'orders.id', '=', 'product_order.order_id')
+      .groupBy<ProcessedOrder[]>('orders.id', 'orders.total_value', 'orders.observation', 'orders.customer_id')
 
     if (customer_id) {
       query.where('orders.customer_id', customer_id)
     }
 
     const data = await query
-    const formattedList: ProcessedOrder[] = formatList(data)
+    const formattedData: ProcessedOrder[] = formatList(data)
 
-    return res.status(200).json(formattedList)
+    return res.status(200).json(formattedData)
   } catch {
     return res.status(500).json({ message: 'Erro interno do servidor' })
   }
