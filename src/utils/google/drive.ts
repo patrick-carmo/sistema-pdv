@@ -82,7 +82,7 @@ const uploadFile = async (
 
     const data = {
       image_id: file.data.id as string,
-      image_link: `https://drive.google.com/uc?id=${file.data.id}`,
+      image_link: `https://drive.google.com/file/d/${file.data.id}/preview`,
     }
 
     return data

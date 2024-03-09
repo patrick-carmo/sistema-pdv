@@ -20,7 +20,7 @@ const loginVerify = async (req: Request, res: Response, next: NextFunction) => {
     const user = await knex<User>('users').where({ id }).first()
 
     if (!user) {
-      return res.status(400).json({ message: 'Não autorizado!' })
+      return res.status(401).json({ message: 'Não autorizado!' })
     }
 
     const { password: _password, ...userInfo } = user

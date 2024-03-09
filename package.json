@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node ./src/index.ts",
-    "vercel-build": "rm -rf ./dist && tsc",
+    "vercel-build": "rm -rf ./dist && tsc && copyfiles -f ./src/config/*.json ./dist/config",
     "start": "node ./dist/index.js"
   },
   "author": "",
@@ -13,6 +13,7 @@
   "dependencies": {
     "aws-sdk": "^2.1531.0",
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "googleapis": "^131.0.0",
@@ -22,14 +23,18 @@
     "knex": "^3.1.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.8",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/multer": "^1.4.11",
     "@types/nodemailer": "^6.4.14",
+    "@types/swagger-ui-express": "^4.1.6",
+    "copyfiles": "^2.4.1",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

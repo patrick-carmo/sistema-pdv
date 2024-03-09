@@ -1,0 +1,1582 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "POS System",
+    "description": "POS System API",
+    "contact": {
+      "name": "Patrick do Carmo / LinkedIn",
+      "url": "https://www.linkedin.com/in/patrick-carmo/"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://patrick-sistema-pdv.vercel.app/"
+    }
+  ],
+  "paths": {
+    "/categoria": {
+      "get": {
+        "description": "Listar categorias",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategorySchema"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "description": "Informática"
+                  },
+                  {
+                    "id": 2,
+                    "description": "Celulares"
+                  },
+                  {
+                    "id": 3,
+                    "description": "Beleza e Perfumaria"
+                  },
+                  {
+                    "id": 4,
+                    "description": "Mercado"
+                  },
+                  {
+                    "id": 5,
+                    "description": "Livros e Papelaria"
+                  },
+                  {
+                    "id": 6,
+                    "description": "Brinquedos"
+                  },
+                  {
+                    "id": 7,
+                    "description": "Moda"
+                  },
+                  {
+                    "id": 8,
+                    "description": "Bebê"
+                  },
+                  {
+                    "id": 9,
+                    "description": "Games"
+                  }
+                ]
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "Autenticar usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginSchema"
+              },
+              "example": {
+                "email": "jose@email.com",
+                "password": "jose"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                },
+                "example": {
+                  "user": {
+                    "id": 1,
+                    "name": "José",
+                    "email": "jose@email.com"
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEwMDI0NzYzLCJleHAiOjE3MTI2MTY3NjN9.MjVL9eZlY9n8q7zI0NezYYe3n-KtKqyu2aNw6LNeaI4"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Informe um email válido"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuario": {
+      "post": {
+        "description": "Registrar usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "name": "José",
+                "email": "jose@email.com",
+                "password": "jose"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSchemaResponse"
+                },
+                "example": {
+                  "name": "José",
+                  "email": "jose@email.com"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "O campo nome é obrigatório"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Detalhar usuário",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "O ID do usuário"
+                        }
+                      },
+                      "required": ["id"]
+                    },
+                    {
+                      "$ref": "#/components/schemas/UserSchemaResponse"
+                    }
+                  ]
+                },
+                "example": {
+                  "id": 1,
+                  "name": "José",
+                  "email": "jose@email.com"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Atualizar usuário",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "name": "José",
+                "email": "jose@email.com",
+                "password": "jose"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/produto": {
+      "post": {
+        "description": "Registrar produto",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductSchema"
+              },
+              "example": {
+                "description": "Mouse sem fio",
+                "stock_qty": 100,
+                "value": 2000,
+                "category_id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductSchema"
+                },
+                "examples": {
+                  "Without product_image": {
+                    "value": {
+                      "id": 1,
+                      "description": "mouse sem fio",
+                      "stock_qty": 100,
+                      "value": 2000,
+                      "category_id": 1
+                    }
+                  },
+                  "With product_image": {
+                    "value": {
+                      "id": 1,
+                      "description": "mouse sem fio",
+                      "stock_qty": 100,
+                      "value": 2000,
+                      "category_id": 1,
+                      "image_link": "https://drive.google.com/file/d/1Mssbb2ri29rZMxotMIbuwhcJjJ62-Dz5/preview"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Categoria não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Listar produtos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductSchemaResponse"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "description": "Mouse sem fio",
+                    "stock_qty": 100,
+                    "value": 2000,
+                    "category_id": 1,
+                    "image_link": "https://drive.google.com/file/d/1Mssbb2ri29rZMxotMIbuwhcJjJ62-Dz5/preview"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/produto/{id}": {
+      "put": {
+        "description": "Atualizar produto",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductSchema"
+              },
+              "example": {
+                "description": "Mouse sem fio",
+                "stock_qty": 100,
+                "value": 2000,
+                "category_id": 1,
+                "image_link": "https://drive.google.com/file/d/1Mssbb2ri29rZMxotMIbuwhcJjJ62-Dz5/preview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductSchemaResponse"
+                },
+                "example": {
+                  "id": "1",
+                  "description": "Mouse sem fio",
+                  "stock_qty": 100,
+                  "value": 2000,
+                  "category_id": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Produto não cadastrado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Detalhar produto",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductSchemaResponse"
+                },
+                "example": {
+                  "id": "1",
+                  "description": "Mouse sem fio",
+                  "stock_qty": 100,
+                  "value": 2000,
+                  "category_id": 1,
+                  "image_link": "https://drive.google.com/file/d/1Mssbb2ri29rZMxotMIbuwhcJjJ62-Dz5/preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Produto não encontrado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletar produto",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Produto não encontrado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cliente": {
+      "post": {
+        "description": "Registrar cliente",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerSchema"
+              },
+              "example": {
+                "name": "Zé da Silva",
+                "email": "zedasilva@email.com",
+                "cpf": "12345678901"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSchemaResponse"
+                },
+                "examples": {
+                  "Without address": {
+                    "value": {
+                      "id": 1,
+                      "name": "Zé da Silva",
+                      "email": "zedasilva@email.com",
+                      "cpf": "12345678901"
+                    }
+                  },
+                  "With address": {
+                    "value": {
+                      "id": 1,
+                      "name": "Zé da Silva",
+                      "email": "zedasilva@email.com",
+                      "cpf": "12345678901",
+                      "zip_code": "12345678",
+                      "street": "Rua das Flores",
+                      "number": "123",
+                      "neighborhood": "Centro",
+                      "city": "Rio de Janeiro",
+                      "state": "RJ"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "E-mail já cadastrado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Listar clientes",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSchemaResponse"
+                },
+                "examples": {
+                  "Without address": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "name": "Zé da Silva",
+                        "email": "zedasilva@email.com",
+                        "cpf": "12345678901"
+                      }
+                    ]
+                  },
+                  "With address": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "name": "Zé da Silva",
+                        "email": "zedasilva@email.com",
+                        "cpf": "12345678901",
+                        "zip_code": "12345678",
+                        "street": "Rua das Flores",
+                        "number": "123",
+                        "neighborhood": "Centro",
+                        "city": "Rio de Janeiro",
+                        "state": "RJ"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cliente/{id}": {
+      "put": {
+        "description": "Atualizar cliente",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "description": "ID do cliente",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerSchema"
+              },
+              "example": {
+                "name": "Zé da Silva",
+                "email": "zedasilva@email.com",
+                "cpf": "12345678901"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "E-mail já cadastrado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Detalhar cliente",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "description": "ID do cliente",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSchemaResponse"
+                },
+                "examples": {
+                  "Without address": {
+                    "value": {
+                      "id": 1,
+                      "name": "Zé da Silva",
+                      "email": "zedasilva@email.com",
+                      "cpf": "12345678901"
+                    }
+                  },
+                  "With address": {
+                    "value": {
+                      "id": 1,
+                      "name": "Zé da Silva",
+                      "email": "zedasilva@email.com",
+                      "cpf": "12345678901",
+                      "zip_code": "12345678",
+                      "street": "Rua das Flores",
+                      "number": "123",
+                      "neighborhood": "Centro",
+                      "city": "Rio de Janeiro",
+                      "state": "RJ"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Cliente não cadastrado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedido": {
+      "post": {
+        "description": "Registrar pedido",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderSchema"
+              },
+              "example": {
+                "customer_id": 1,
+                "observation": "Em caso de ausência recomendo deixar com algum vizinho",
+                "product_order": [
+                  {
+                    "product_id": 1,
+                    "product_qty": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderSchemaResponse"
+                },
+                "example": {
+                  "order": {
+                    "id": 1,
+                    "customer_id": 1,
+                    "observation": "Em caso de ausência recomendo deixar com algum vizinho",
+                    "total_value": 2000
+                  },
+                  "product_order": [
+                    {
+                      "id": 1,
+                      "order_id": 1,
+                      "product_id": 1,
+                      "product_qty": 1,
+                      "product_value": 2000
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "examples": {
+                  "Customer not found": {
+                    "value": {
+                      "message": "Cliente não cadastrado"
+                    }
+                  },
+                  "Array message: Product not found / Insufficient stock": {
+                    "value": {
+                      "message": [
+                        "O produto com id \"4\" não foi encontrado",
+
+                        "Estoque insuficiente para o produto \"mouse sem fio\". Estoque disponível: 100"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Listar pedidos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderSchemaResponse"
+                },
+                "example": {
+                  "order": {
+                    "id": 1,
+                    "customer_id": 1,
+                    "observation": "Em caso de ausência recomendo deixar com algum vizinho",
+                    "total_value": 2000
+                  },
+                  "product_order": [
+                    {
+                      "id": 1,
+                      "order_id": 1,
+                      "product_id": 1,
+                      "product_qty": 1,
+                      "product_value": 2000
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Token não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageSchema"
+                },
+                "example": {
+                  "message": "Erro interno do servidor"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MessageSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "CategorySchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LoginSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "O email do usuário"
+          },
+          "password": {
+            "type": "string",
+            "description": "A senha do usuário"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "O ID do usuário"
+              },
+              "name": {
+                "type": "string",
+                "description": "O nome do usuário"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "O email do usuário"
+              }
+            },
+            "required": ["id", "name", "email"]
+          },
+          "token": {
+            "type": "string",
+            "description": "O token de acesso do usuário"
+          }
+        },
+        "required": ["user", "token"]
+      },
+      "UserSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "O nome do usuário",
+            "minLength": 4
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "O email do usuário"
+          },
+          "password": {
+            "type": "string",
+            "description": "A senha do usuário",
+            "minLength": 4
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "UserSchemaResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "O nome do usuário"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "O email do usuário"
+          }
+        },
+        "required": ["name", "email"]
+      },
+      "ProductSchemaBase": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A descrição do produto",
+            "minLength": 4
+          },
+          "stock_qty": {
+            "type": "integer",
+            "description": "A quantidade em estoque do produto",
+            "minimum": 1
+          },
+          "value": {
+            "type": "integer",
+            "description": "O valor do produto",
+            "minimum": 1
+          },
+          "category_id": {
+            "type": "integer",
+            "description": "O ID da categoria do produto",
+            "minimum": 1
+          }
+        },
+        "required": ["description", "stock_qty", "value", "category_id"]
+      },
+      "ProductSchema": {
+        "type": "array",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ProductSchemaBase"
+          },
+          {
+            "properties": {
+              "product_image": {
+                "type": "string",
+                "format": "binary",
+                "description": "A imagem do produto (opcional - multipart/form-data)"
+              }
+            }
+          }
+        ]
+      },
+      "ProductQueryParams": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "integer",
+            "description": "O ID da categoria do produto para filtrar (opcional)"
+          }
+        }
+      },
+      "CustomerSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 4,
+            "example": "Zé da Silva",
+            "description": "O nome do cliente"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "zedasilva@email.com",
+            "description": "O email do cliente"
+          },
+          "cpf": {
+            "type": "string",
+            "minLength": 11,
+            "maxLength": 11,
+            "pattern": "^[0-9]+$",
+            "example": "12345678901",
+            "description": "O CPF do cliente"
+          },
+          "zip_code": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 8,
+            "pattern": "^[0-9]+$",
+            "example": "12345678",
+            "description": "O CEP do cliente"
+          },
+          "street": {
+            "type": "string",
+            "description": "A rua do endereço do cliente"
+          },
+          "number": {
+            "type": "string",
+            "description": "O número do endereço do cliente"
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "O bairro do endereço do cliente"
+          },
+          "city": {
+            "type": "string",
+            "description": "A cidade do endereço do cliente"
+          },
+          "state": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "example": "SP",
+            "description": "O estado do cliente"
+          }
+        },
+        "required": ["name", "email", "cpf"]
+      },
+      "OrderSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "integer",
+            "description": "O ID do cliente que fez o pedido",
+            "minimum": 1
+          },
+          "observation": {
+            "type": "string",
+            "description": "Observações adicionais sobre o pedido"
+          },
+          "product_order": {
+            "type": "array",
+            "description": "Lista de produtos no pedido",
+            "items": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "integer",
+                  "description": "O ID do produto no pedido",
+                  "minimum": 1
+                },
+                "product_qty": {
+                  "type": "integer",
+                  "description": "A quantidade do produto no pedido",
+                  "minimum": 1
+                }
+              },
+              "required": ["product_id", "product_qty"]
+            }
+          }
+        },
+        "required": ["customer_id", "product_order"]
+      },
+      "OrderQueryParams": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "integer",
+            "description": "O ID do cliente para filtrar pedidos"
+          }
+        }
+      },
+      "ProductSchemaResponse": {
+        "type": "array",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "O ID do produto"
+              }
+            },
+            "required": ["id"]
+          },
+          {
+            "$ref": "#/components/schemas/ProductSchemaBase"
+          },
+          {
+            "properties": {
+              "image_link": {
+                "type": "string",
+                "description": "O link da imagem do produto"
+              }
+            }
+          }
+        ]
+      },
+      "CustomerSchemaResponse": {
+        "type": "array",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "O ID do cliente"
+              }
+            },
+            "required": ["id"]
+          },
+          {
+            "$ref": "#/components/schemas/CustomerSchema"
+          }
+        ]
+      },
+      "OrderSchemaResponse": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "customer_id": {
+                "type": "integer"
+              },
+              "observation": {
+                "type": "string"
+              },
+              "total_value": {
+                "type": "integer"
+              }
+            }
+          },
+          "product_order": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "order_id": {
+                  "type": "integer"
+                },
+                "product_id": {
+                  "type": "integer"
+                },
+                "product_qty": {
+                  "type": "integer"
+                },
+                "product_value": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

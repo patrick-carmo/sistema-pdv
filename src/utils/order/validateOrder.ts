@@ -23,7 +23,7 @@ const validateOrder = async (
       const { stock_qty, description, value: product_value } = product
 
       if (stock_qty - product_qty < 0) {
-        errorStock.push(`Produto "${description}" sem estoque suficiente. Estoque disponível: ${stock_qty}`)
+        errorStock.push(`Estoque insuficiente para o produto "${description}". Estoque disponível: ${stock_qty}`)
         continue
       }
 
