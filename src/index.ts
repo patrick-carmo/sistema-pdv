@@ -1,12 +1,14 @@
 import 'dotenv/config'
+import 'express-async-errors'
 import express, { Express } from 'express'
 const app: Express = express()
+import env from './config/envConfig'
 import swagger from 'swagger-ui-express'
 import swaggerJson from './config/swagger.json'
 import cors from 'cors'
 
 import route from './routes/route'
-
+import errorMiddleware from './middlewares/error'
 
 app.use(express.json())
 app.use(cors())
@@ -18,11 +20,10 @@ app.use(
   })
 )
 app.use(route)
+app.use(errorMiddleware)
 
-const port: number = Number(process.env.PORT) || 3000
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
+app.listen(env.PORT, () => {
+  console.log(`Server running on port ${env.PORT}`)
 })
 
-// Vercel deploy
 export default app

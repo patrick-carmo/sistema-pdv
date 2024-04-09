@@ -1,6 +1,7 @@
 import knex from 'knex'
+import env from './envConfig'
 
 export default knex({
   client: 'pg',
-  connection: process.env.POSTGRES_URL,
+  connection: env.POSTGRES_URL,
 })
