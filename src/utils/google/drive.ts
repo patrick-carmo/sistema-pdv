@@ -1,9 +1,10 @@
 import fs from 'fs'
 import { google } from 'googleapis'
+import env from '../../config/envConfig'
 
 const authorization = async () => {
   try {
-    const jwt = new google.auth.JWT(process.env.DRIVE_EMAIL, undefined, process.env.DRIVE_KEY, process.env.DRIVE_SCOPE)
+    const jwt = new google.auth.JWT(env.DRIVE_EMAIL, undefined, env.DRIVE_KEY, env.DRIVE_SCOPE)
     await jwt.authorize()
 
     return jwt
@@ -17,43 +18,35 @@ const createFolder = async (name: string): Promise<string> => {
 
   const fileMetaData = {
     name,
-    parents: [process.env.DRIVE_FOLDER as string],
-    mimeType: process.env.DRIVE_MIMETYPE,
+    parents: [env.DRIVE_FOLDER],
+    mimeType: env.DRIVE_MIMETYPE,
   }
 
-  try {
-    const file = await service.files.create({
-      requestBody: fileMetaData,
-      fields: 'id',
-    })
+  const file = await service.files.create({
+    requestBody: fileMetaData,
+    fields: 'id',
+  })
 
-    return file.data.id as string
-  } catch (error: any) {
-    throw error
-  }
+  return file.data.id as string
 }
 
 const searchFolder = async (identifier: string): Promise<string | null> => {
   const service = google.drive({ version: 'v3', auth: await authorization() })
 
-  try {
-    const res = await service.files.list({
-      q: `mimeType='${process.env.DRIVE_MIMETYPE}' and name='${identifier}' and trashed=false`,
-      fields: 'files(id, name)',
-    })
+  const res = await service.files.list({
+    q: `mimeType='${env.DRIVE_MIMETYPE}' and name='${identifier}' and trashed=false`,
+    fields: 'files(id, name)',
+  })
 
-    const folders = res.data.files
+  const folders = res.data.files
 
-    if (!folders || folders.length === 0) {
-      return null
-    }
-
-    const folderId = folders[0].id
-
-    return folderId as string
-  } catch (error: any) {
-    throw error
+  if (!folders || folders.length === 0) {
+    return null
   }
+
+  const folderId = folders[0].id
+
+  return folderId as string
 }
 
 const uploadFile = async (
@@ -73,32 +66,24 @@ const uploadFile = async (
     body: fs.createReadStream(path),
   }
 
-  try {
-    const file = await service.files.create({
-      requestBody: fileMetadata,
-      media: media,
-      fields: 'id',
-    })
+  const file = await service.files.create({
+    requestBody: fileMetadata,
+    media: media,
+    fields: 'id',
+  })
 
-    const data = {
-      image_id: file.data.id as string,
-      image_link: `https://drive.google.com/file/d/${file.data.id}/preview`,
-    }
-
-    return data
-  } catch (error: any) {
-    throw error
+  const returnData = {
+    image_id: file.data.id as string,
+    image_link: `https://drive.google.com/file/d/${file.data.id}/preview`,
   }
+
+  return returnData
 }
 
 const deleteFile = async (fileId: string): Promise<null> => {
   const service = google.drive({ version: 'v3', auth: await authorization() })
-  try {
-    await service.files.delete({ fileId })
-    return null
-  } catch (error: any) {
-    throw error
-  }
+  await service.files.delete({ fileId })
+  return null
 }
 
 // const deleteAllFolders = async () => {

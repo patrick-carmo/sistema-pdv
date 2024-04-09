@@ -3,12 +3,8 @@ import { Request, Response } from 'express'
 import { Categories } from '../types/types'
 
 const listCategories = async (_: Request, res: Response) => {
-  try {
-    const categories = await knex<Categories>('categories')
-    res.status(200).json(categories)
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' })
-  }
+  const categories = await knex<Categories>('categories')
+  res.status(200).json(categories)
 }
 
 export default listCategories

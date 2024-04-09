@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { BadRequestError } from '../utils/apiError'
 import { ObjectSchema } from 'joi'
 
 const validateRequest = (schema: ObjectSchema) => async (req: Request, res: Response, next: NextFunction) => {
@@ -9,7 +10,7 @@ const validateRequest = (schema: ObjectSchema) => async (req: Request, res: Resp
       Object.keys(req.params).length === 0 &&
       Object.keys(req.query).length === 0
     ) {
-      return res.status(400).json({ message: 'Preencha os dados' })
+      throw new BadRequestError('Preencha os dados')
     }
 
     if (Object.keys(req.body).length !== 0) {
@@ -24,7 +25,7 @@ const validateRequest = (schema: ObjectSchema) => async (req: Request, res: Resp
 
     next()
   } catch (error: any) {
-    return res.status(400).json({ message: error.message })
+    throw new BadRequestError(error.message)
   }
 }
 

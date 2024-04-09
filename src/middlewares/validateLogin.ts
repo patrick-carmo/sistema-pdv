@@ -1,26 +1,28 @@
 import jwt from 'jsonwebtoken'
+import { BadRequestError, UnauthorizedError } from '../utils/apiError'
 import knex from '../config/connect'
 import { Request, Response, NextFunction } from 'express'
+import env from '../config/envConfig'
 import { User } from '../types/types'
 
 const loginVerify = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
 
   if (!authorization) {
-    return res.status(401).json({ message: 'Token não encontrado' })
+    throw new UnauthorizedError('Não autorizado!')
   }
 
   const token: string = authorization.replace('Bearer', '').trim()
 
   try {
-    const { id } = jwt.verify(token, process.env.SECRET as string) as {
+    const { id } = jwt.verify(token, env.SECRET) as {
       id: number
     }
 
     const user = await knex<User>('users').where({ id }).first()
 
     if (!user) {
-      return res.status(401).json({ message: 'Não autorizado!' })
+      throw new UnauthorizedError('Não autorizado!')
     }
 
     const { password: _password, ...userInfo } = user
@@ -35,7 +37,7 @@ const loginVerify = async (req: Request, res: Response, next: NextFunction) => {
     if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({ message: 'Não autorizado!' })
     }
-    return res.status(500).json({ message: 'Erro interno do servidor' })
+    throw error
   }
 }
 
